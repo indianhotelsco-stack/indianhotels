@@ -20,12 +20,22 @@ export default async function Home() {
       <Header />
       <main className="flex-1">
         {/* HERO */}
-        <section className="border-b border-gray-200 bg-white">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 py-14">
-            <h1 className="text-navy font-bold text-[32px] sm:text-[42px] leading-tight mb-3">
-              Stay at India&rsquo;s Best Hotels
+        <section
+          className="text-white relative overflow-hidden"
+          style={{ background: 'linear-gradient(135deg, #0F172A 0%, #1E3A5F 100%)' }}
+        >
+          <div
+            className="absolute inset-0 opacity-20"
+            style={{ background: 'radial-gradient(circle at 80% 20%, #D4AF37, transparent 55%)' }}
+          />
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 py-16 sm:py-20 relative">
+            <span className="inline-block text-xs font-bold tracking-wide uppercase text-gold bg-white/10 px-3 py-1 rounded-full mb-4">
+              {destinations.length} destinations · every state covered
+            </span>
+            <h1 className="font-bold text-[34px] sm:text-[48px] leading-tight mb-3 max-w-2xl">
+              Stay at India&rsquo;s <span className="text-gold">Best Hotels</span>
             </h1>
-            <p className="text-gray-600 text-base sm:text-lg mb-8 max-w-xl">
+            <p className="text-gray-300 text-base sm:text-lg mb-8 max-w-xl">
               Discover premium accommodations at verified prices, organised by the attractions you&rsquo;re visiting.
             </p>
             <SearchBar destinations={destinations} />

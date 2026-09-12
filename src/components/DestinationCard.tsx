@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import ImagePlaceholder from './ImagePlaceholder'
 import type { Destination } from '@/lib/types'
 
@@ -11,12 +12,24 @@ export default function DestinationCard({ destination }: { destination: Destinat
   return (
     <Link
       href={`/destination/${destination.slug}`}
-      className="card card-hover overflow-hidden !p-0 block min-w-[160px]"
+      className="group relative block overflow-hidden rounded-lg border border-gray-200 min-w-[160px] transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
+      style={{ height: 170 }}
     >
-      <ImagePlaceholder height={130} label={destination.name} />
-      <div className="p-3">
-        <div className="text-sm font-bold text-navy">{destination.name}</div>
-        <div className="text-xs text-gray-600 mt-0.5">
+      {destination.imageUrl ? (
+        <Image
+          src={destination.imageUrl}
+          alt={destination.name}
+          fill
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          sizes="(max-width: 640px) 50vw, 200px"
+        />
+      ) : (
+        <ImagePlaceholder height={170} label={destination.name} />
+      )}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 p-3">
+        <div className="text-sm font-bold text-white leading-tight">{destination.name}</div>
+        <div className="text-xs text-white/80 mt-0.5">
           {destination.region} · {formatSearches(destination.monthlySearches)}/month
         </div>
       </div>

@@ -3,46 +3,71 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import DestinationCard from '@/components/DestinationCard'
 import { getAllDestinations } from '@/lib/data'
+import { ZONES, zoneForRegion } from '@/lib/india-zones'
 
 export const metadata: Metadata = {
   title: 'All Destinations — Hotels Across India',
-  description: 'Browse hotels across every Indian state and union territory, organised by the attraction or region tourists actually visit.',
+  description: 'Browse hotels across every Indian state and union territory, organised by region.',
   alternates: { canonical: 'https://www.indianhotels.co/destinations' },
 }
 
 export default async function AllDestinationsPage() {
   const destinations = await getAllDestinations()
 
-  // Group by region (state/UT) so the page reads as genuine full-country
-  // coverage rather than one long undifferentiated grid.
-  const byRegion = new Map<string, typeof destinations>()
+  const byZone = new Map<string, typeof destinations>()
   for (const d of destinations) {
-    const list = byRegion.get(d.region) ?? []
+    const zoneId = zoneForRegion(d.region)
+    const list = byZone.get(zoneId) ?? []
     list.push(d)
-    byRegion.set(d.region, list)
+    byZone.set(zoneId, list)
   }
-  const regions = [...byRegion.keys()].sort()
+  const activeZones = ZONES.filter(z => byZone.has(z.id))
+  const regionCount = new Set(destinations.map(d => d.region)).size
 
   return (
     <>
       <Header />
       <main className="flex-1">
-        <section className="border-b border-gray-200 bg-white">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 py-12">
-            <h1 className="text-navy font-bold text-[28px] sm:text-[38px] leading-tight mb-2">All Destinations</h1>
-            <p className="text-gray-600 text-base max-w-xl">
-              {destinations.length} destinations across {regions.length} states and union territories.
+        {/* Hero */}
+        <section
+          className="border-b border-gray-200 text-white"
+          style={{ background: 'linear-gradient(135deg, #0F172A 0%, #1E3A5F 100%)' }}
+        >
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 py-14 text-center">
+            <h1 className="font-bold text-[30px] sm:text-[42px] leading-tight mb-3">
+              Every Corner of India, <span className="text-gold">One Place to Stay</span>
+            </h1>
+            <p className="text-gray-300 text-base sm:text-lg max-w-xl mx-auto">
+              {destinations.length} destinations across {regionCount} states and union territories — from Himalayan passes to southern backwaters.
             </p>
           </div>
         </section>
 
+        {/* Quick-nav menu */}
+        <nav className="sticky top-16 z-40 bg-white border-b border-gray-200 overflow-x-auto">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 py-3 flex gap-2 whitespace-nowrap">
+            {activeZones.map(zone => (
+              <a
+                key={zone.id}
+                href={`#${zone.id}`}
+                className="text-xs sm:text-sm font-semibold px-3 py-1.5 rounded-full border border-gray-200 text-gray-700 hover:border-navy hover:text-navy transition-colors"
+              >
+                {zone.label}
+              </a>
+            ))}
+          </div>
+        </nav>
+
         <section className="py-12">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 flex flex-col gap-10">
-            {regions.map(region => (
-              <div key={region}>
-                <h2 className="text-lg font-bold text-navy mb-4">{region}</h2>
-                <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))' }}>
-                  {byRegion.get(region)!.map(d => <DestinationCard key={d.id} destination={d} />)}
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 flex flex-col gap-14">
+            {activeZones.map(zone => (
+              <div key={zone.id} id={zone.id} className="scroll-mt-32">
+                <div className="mb-5">
+                  <h2 className="text-2xl font-bold text-navy">{zone.label}</h2>
+                  <p className="text-sm text-gray-600 mt-1">{zone.blurb}</p>
+                </div>
+                <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))' }}>
+                  {byZone.get(zone.id)!.map(d => <DestinationCard key={d.id} destination={d} />)}
                 </div>
               </div>
             ))}
