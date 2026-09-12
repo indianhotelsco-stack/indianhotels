@@ -34,8 +34,20 @@ function mapAmenity(row: AmenityRow): Amenity {
   return { id: row.id, name: row.name, icon: row.icon ?? '•' }
 }
 
+/**
+ * Booking.com's public search results for this hotel — no affiliate account,
+ * no commission, but a real working page. Swap this out for a real affiliate
+ * deep-link once a Booking.com/Agoda partner account is approved; every hotel
+ * picks it up automatically since it's generated here, not stored per-row.
+ */
+function bookingComSearchUrl(hotelName: string, address: string | null): string {
+  const query = address ? `${hotelName}, ${address}` : hotelName
+  return `https://www.booking.com/searchresults.html?ss=${encodeURIComponent(query)}`
+}
+
 function mapListing(row: ListingRow): Hotel {
   const amenities = (row.listing_amenities ?? []).map(la => mapAmenity(la.amenities))
+  const hasRealAffiliateLink = Boolean(row.booking_com_affiliate_link)
   return {
     id: row.id,
     destinationId: row.destination_id,
@@ -51,7 +63,8 @@ function mapListing(row: ListingRow): Hotel {
     latitude: row.latitude ?? 0,
     longitude: row.longitude ?? 0,
     isFeatured: row.is_featured,
-    bookingComAffiliateLink: row.booking_com_affiliate_link || '#',
+    bookingComLink: hasRealAffiliateLink ? row.booking_com_affiliate_link! : bookingComSearchUrl(row.name, row.address),
+    bookingComLinkIsAffiliate: hasRealAffiliateLink,
   }
 }
 

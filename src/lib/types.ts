@@ -42,7 +42,9 @@ export interface Hotel {
   latitude: number
   longitude: number
   isFeatured: boolean
-  bookingComAffiliateLink: string
+  bookingComLink: string
+  /** True once a real affiliate account is wired up — false means bookingComLink is a plain (non-commission) search link. */
+  bookingComLinkIsAffiliate: boolean
 }
 
 export interface HotelFilters {

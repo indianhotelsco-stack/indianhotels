@@ -45,14 +45,16 @@ export default function BookingSidebar({ hotel }: { hotel: Hotel }) {
       )}
 
       <a
-        href={hotel.bookingComAffiliateLink}
+        href={hotel.bookingComLink}
         target="_blank"
-        rel="noopener noreferrer sponsored"
+        rel={hotel.bookingComLinkIsAffiliate ? 'noopener noreferrer sponsored' : 'noopener noreferrer'}
         className="btn btn-accent w-full"
       >
-        Book Now →
+        {hotel.bookingComLinkIsAffiliate ? 'Book Now →' : 'Search on Booking.com →'}
       </a>
-      <p className="text-[11px] text-gray-600 text-center mt-3">Powered by Booking.com</p>
+      <p className="text-[11px] text-gray-600 text-center mt-3">
+        {hotel.bookingComLinkIsAffiliate ? 'Powered by Booking.com' : 'Opens Booking.com search results in a new tab'}
+      </p>
     </aside>
   )
 }
