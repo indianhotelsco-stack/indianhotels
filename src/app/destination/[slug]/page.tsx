@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import ImagePlaceholder from '@/components/ImagePlaceholder'
+import DestinationHeroGallery from '@/components/DestinationHeroGallery'
 import DestinationClient from './DestinationClient'
 import { getAllAmenities, getAllDestinations, getDestinationBySlug, getHotelsByDestination } from '@/lib/data'
 import { haversineKm } from '@/lib/geo'
@@ -41,19 +41,24 @@ export default async function DestinationPage({ params }: Props) {
         : undefined,
   }))
 
+  // Real photos from the top-rated hotels here (getHotelsByDestination already
+  // sorts by star_rating desc) — one per hotel, up to 12, so the destination
+  // gallery is genuine hotel photography, not a single stock banner.
+  const galleryPhotos = hotels
+    .map(h => h.imageUrls[0])
+    .filter((url): url is string => Boolean(url))
+    .slice(0, 12)
+  if (galleryPhotos.length === 0 && destination.imageUrl) galleryPhotos.push(destination.imageUrl)
+
   return (
     <>
       <Header />
       <main className="flex-1">
-        <div className="relative">
-          <ImagePlaceholder height={220} label={destination.name} />
-          <div className="absolute inset-0 bg-black/30 flex flex-col justify-end p-6 sm:p-10">
-            <h1 className="text-white text-2xl sm:text-4xl font-bold">Hotels near {destination.name}</h1>
-            <p className="text-white/85 text-sm mt-1">
-              {destination.monthlySearches.toLocaleString('en-IN')}+ searches/month · {hotels.length} hotels available
-            </p>
-          </div>
-        </div>
+        <DestinationHeroGallery
+          photos={galleryPhotos}
+          destinationName={destination.name}
+          subtitle={`${destination.monthlySearches.toLocaleString('en-IN')}+ searches/month · ${hotels.length} hotels available`}
+        />
 
         <DestinationClient hotels={hotels} amenities={amenities} destination={destination} />
       </main>
