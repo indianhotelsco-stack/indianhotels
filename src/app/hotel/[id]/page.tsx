@@ -7,6 +7,7 @@ import ImagePlaceholder from '@/components/ImagePlaceholder'
 import HotelGallery from '@/components/HotelGallery'
 import BookingSidebar from './BookingSidebar'
 import { getAllHotelIds, getDestinationById, getHotelById, getReviewsForHotel } from '@/lib/data'
+import { haversineKm } from '@/lib/geo'
 
 type Props = { params: Promise<{ id: string }> }
 
@@ -35,6 +36,11 @@ export default async function HotelDetailPage({ params }: Props) {
     getDestinationById(hotel.destinationId),
     getReviewsForHotel(hotel.id),
   ])
+
+  const distanceKm =
+    destination && hotel.latitude && hotel.longitude
+      ? haversineKm(destination.latitude, destination.longitude, hotel.latitude, hotel.longitude)
+      : undefined
 
   return (
     <>
@@ -73,10 +79,13 @@ export default async function HotelDetailPage({ params }: Props) {
                   </div>
                 </>
               )}
-              {(hotel.phone || hotel.website || hotel.googleMapsUrl) && (
+              {(hotel.phone || hotel.website || hotel.googleMapsUrl || distanceKm !== undefined) && (
                 <>
                   <h3 className="text-base font-bold text-navy mt-6 mb-3">Contact &amp; Location</h3>
                   <div className="flex flex-col gap-2 text-sm text-gray-600">
+                    {distanceKm !== undefined && destination && (
+                      <div>📏 {distanceKm.toFixed(1)} km from {destination.name}</div>
+                    )}
                     {hotel.phone && <div>📞 <a href={`tel:${hotel.phone.replace(/\s+/g, '')}`} className="hover:underline">{hotel.phone}</a></div>}
                     {hotel.website && (
                       <div>🌐 <a href={hotel.website} target="_blank" rel="noopener noreferrer nofollow" className="hover:underline text-navy">Official website</a></div>

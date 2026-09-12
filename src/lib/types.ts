@@ -48,11 +48,13 @@ export interface Hotel {
   phone: string | null
   website: string | null
   googleMapsUrl: string | null
+  /** Computed at request time from the destination's coordinates — not stored. */
+  distanceFromCenterKm?: number
 }
 
 export interface HotelFilters {
   maxPrice?: number
   minRating?: number
   amenityIds?: string[]
-  sort?: 'price-asc' | 'price-desc' | 'rating' | 'popular'
+  sort?: 'price-asc' | 'price-desc' | 'rating' | 'popular' | 'distance'
 }

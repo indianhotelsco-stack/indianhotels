@@ -5,6 +5,7 @@ import Footer from '@/components/Footer'
 import ImagePlaceholder from '@/components/ImagePlaceholder'
 import DestinationClient from './DestinationClient'
 import { getAllAmenities, getAllDestinations, getDestinationBySlug, getHotelsByDestination } from '@/lib/data'
+import { haversineKm } from '@/lib/geo'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -28,10 +29,17 @@ export default async function DestinationPage({ params }: Props) {
   const destination = await getDestinationBySlug(slug)
   if (!destination) notFound()
 
-  const [hotels, amenities] = await Promise.all([
+  const [rawHotels, amenities] = await Promise.all([
     getHotelsByDestination(destination.id),
     getAllAmenities(),
   ])
+  const hotels = rawHotels.map(h => ({
+    ...h,
+    distanceFromCenterKm:
+      h.latitude && h.longitude
+        ? haversineKm(destination.latitude, destination.longitude, h.latitude, h.longitude)
+        : undefined,
+  }))
 
   return (
     <>
@@ -47,7 +55,7 @@ export default async function DestinationPage({ params }: Props) {
           </div>
         </div>
 
-        <DestinationClient hotels={hotels} amenities={amenities} />
+        <DestinationClient hotels={hotels} amenities={amenities} destination={destination} />
       </main>
       <Footer />
     </>
