@@ -20,7 +20,7 @@ export default function BookingSidebar({ hotel }: { hotel: Hotel }) {
       <div className="text-[13px] text-gray-600 mb-6">{hotel.address}</div>
 
       <div className="text-[28px] font-bold text-gold mb-6">
-        ₹{hotel.pricePerNight.toLocaleString('en-IN')}<span className="text-sm text-gray-600 font-normal">/night</span>
+        ₹{hotel.pricePerNight.toLocaleString('en-IN')}<span className="text-sm text-gray-600 font-normal">/night{hotel.priceIsEstimate ? ' (estimated)' : ''}</span>
       </div>
 
       <label className="block text-xs font-bold text-navy mb-1">Check-in</label>

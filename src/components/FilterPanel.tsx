@@ -1,7 +1,6 @@
 'use client'
 
-import { AMENITIES } from '@/lib/data'
-import type { HotelFilters } from '@/lib/types'
+import type { Amenity, HotelFilters } from '@/lib/types'
 
 const MIN_PRICE = 2000
 const MAX_PRICE = 50000
@@ -9,9 +8,11 @@ const MAX_PRICE = 50000
 export default function FilterPanel({
   filters,
   onChange,
+  amenities,
 }: {
   filters: HotelFilters
   onChange: (next: HotelFilters) => void
+  amenities: Amenity[]
 }) {
   const maxPrice = filters.maxPrice ?? MAX_PRICE
 
@@ -68,7 +69,7 @@ export default function FilterPanel({
       <div className="mb-6">
         <div className="text-xs font-semibold text-navy mb-2">Amenities</div>
         <div className="flex flex-col gap-2">
-          {AMENITIES.map(a => (
+          {amenities.map(a => (
             <label key={a.id} className="flex items-center gap-2 text-xs text-gray-700 cursor-pointer">
               <input
                 type="checkbox"

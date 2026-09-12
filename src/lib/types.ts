@@ -32,14 +32,15 @@ export interface Hotel {
   name: string
   description: string
   pricePerNight: number
+  /** True per the data source: real Booking.com/Agoda live rate vs. a Google-price-level estimate. */
+  priceIsEstimate: boolean
   starRating: number
   reviewCount: number
   imageUrls: string[]
-  amenityIds: string[]
+  amenities: Amenity[]
   address: string
   latitude: number
   longitude: number
-  distanceFromAttractionKm: number
   isFeatured: boolean
   bookingComAffiliateLink: string
 }

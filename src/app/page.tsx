@@ -3,7 +3,7 @@ import Footer from '@/components/Footer'
 import SearchBar from '@/components/SearchBar'
 import DestinationCard from '@/components/DestinationCard'
 import HotelCard from '@/components/HotelCard'
-import { DESTINATIONS, HOTELS } from '@/lib/data'
+import { getAllDestinations, getFeaturedHotels } from '@/lib/data'
 
 const WHY_CARDS = [
   { title: 'Best Prices', desc: 'Compare rates across trusted booking partners to find the best price for every stay.' },
@@ -11,8 +11,8 @@ const WHY_CARDS = [
   { title: 'Easy Booking', desc: 'One click takes you straight to a trusted partner to complete your booking securely.' },
 ]
 
-export default function Home() {
-  const featured = HOTELS.filter(h => h.isFeatured).slice(0, 4)
+export default async function Home() {
+  const [destinations, featured] = await Promise.all([getAllDestinations(), getFeaturedHotels(4)])
 
   return (
     <>
@@ -27,7 +27,7 @@ export default function Home() {
             <p className="text-gray-600 text-base sm:text-lg mb-8 max-w-xl">
               Discover premium accommodations at verified prices, organised by the attractions you&rsquo;re visiting.
             </p>
-            <SearchBar />
+            <SearchBar destinations={destinations} />
           </div>
         </section>
 
@@ -36,7 +36,7 @@ export default function Home() {
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
             <h2 className="text-2xl font-bold text-navy mb-6">Top Destinations</h2>
             <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))' }}>
-              {DESTINATIONS.map(d => <DestinationCard key={d.id} destination={d} />)}
+              {destinations.map(d => <DestinationCard key={d.id} destination={d} />)}
             </div>
           </div>
         </section>

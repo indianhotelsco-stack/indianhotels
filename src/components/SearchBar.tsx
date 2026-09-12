@@ -3,9 +3,9 @@
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { DESTINATIONS } from '@/lib/data'
+import type { Destination } from '@/lib/types'
 
-export default function SearchBar() {
+export default function SearchBar({ destinations }: { destinations: Destination[] }) {
   const router = useRouter()
   const [query, setQuery] = useState('')
   const [focused, setFocused] = useState(false)
@@ -13,12 +13,12 @@ export default function SearchBar() {
   const matches = useMemo(() => {
     if (!query.trim()) return []
     const q = query.toLowerCase()
-    return DESTINATIONS.filter(d => d.name.toLowerCase().includes(q) || d.region.toLowerCase().includes(q)).slice(0, 5)
-  }, [query])
+    return destinations.filter(d => d.name.toLowerCase().includes(q) || d.region.toLowerCase().includes(q)).slice(0, 5)
+  }, [query, destinations])
 
   function submit(e: React.FormEvent) {
     e.preventDefault()
-    const match = DESTINATIONS.find(d => d.name.toLowerCase() === query.trim().toLowerCase()) ?? matches[0]
+    const match = destinations.find(d => d.name.toLowerCase() === query.trim().toLowerCase()) ?? matches[0]
     if (match) router.push(`/destination/${match.slug}`)
   }
 

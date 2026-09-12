@@ -4,17 +4,18 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ImagePlaceholder from '@/components/ImagePlaceholder'
 import DestinationClient from './DestinationClient'
-import { DESTINATIONS, getDestinationBySlug, getHotelsByDestination } from '@/lib/data'
+import { getAllAmenities, getAllDestinations, getDestinationBySlug, getHotelsByDestination } from '@/lib/data'
 
 type Props = { params: Promise<{ slug: string }> }
 
-export function generateStaticParams() {
-  return DESTINATIONS.map(d => ({ slug: d.slug }))
+export async function generateStaticParams() {
+  const destinations = await getAllDestinations()
+  return destinations.map(d => ({ slug: d.slug }))
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const destination = getDestinationBySlug(slug)
+  const destination = await getDestinationBySlug(slug)
   if (!destination) return { title: 'Destination Not Found' }
   return {
     title: `Hotels near ${destination.name} | Verified Reviews & Best Prices`,
@@ -24,10 +25,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function DestinationPage({ params }: Props) {
   const { slug } = await params
-  const destination = getDestinationBySlug(slug)
+  const destination = await getDestinationBySlug(slug)
   if (!destination) notFound()
 
-  const hotels = getHotelsByDestination(destination.id)
+  const [hotels, amenities] = await Promise.all([
+    getHotelsByDestination(destination.id),
+    getAllAmenities(),
+  ])
 
   return (
     <>
@@ -43,7 +47,7 @@ export default async function DestinationPage({ params }: Props) {
           </div>
         </div>
 
-        <DestinationClient hotels={hotels} />
+        <DestinationClient hotels={hotels} amenities={amenities} />
       </main>
       <Footer />
     </>

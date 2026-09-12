@@ -3,9 +3,9 @@
 import { useMemo, useState } from 'react'
 import FilterPanel from '@/components/FilterPanel'
 import HotelCard from '@/components/HotelCard'
-import type { Hotel, HotelFilters } from '@/lib/types'
+import type { Amenity, Hotel, HotelFilters } from '@/lib/types'
 
-export default function DestinationClient({ hotels }: { hotels: Hotel[] }) {
+export default function DestinationClient({ hotels, amenities }: { hotels: Hotel[]; amenities: Amenity[] }) {
   const [filters, setFilters] = useState<HotelFilters>({})
 
   const filtered = useMemo(() => {
@@ -13,7 +13,8 @@ export default function DestinationClient({ hotels }: { hotels: Hotel[] }) {
       if (filters.maxPrice && h.pricePerNight > filters.maxPrice) return false
       if (filters.minRating && h.starRating < filters.minRating) return false
       if (filters.amenityIds && filters.amenityIds.length > 0) {
-        const has = filters.amenityIds.every(a => h.amenityIds.includes(a))
+        const hotelAmenityIds = h.amenities.map(a => a.id)
+        const has = filters.amenityIds.every(a => hotelAmenityIds.includes(a))
         if (!has) return false
       }
       return true
@@ -26,7 +27,7 @@ export default function DestinationClient({ hotels }: { hotels: Hotel[] }) {
 
   return (
     <div className="flex flex-col lg:flex-row">
-      <FilterPanel filters={filters} onChange={setFilters} />
+      <FilterPanel filters={filters} onChange={setFilters} amenities={amenities} />
       <div className="flex-1 bg-gray-50 p-6">
         <div className="flex items-center justify-between mb-4">
           <div className="text-sm text-gray-600">{filtered.length} hotel{filtered.length === 1 ? '' : 's'} found</div>
