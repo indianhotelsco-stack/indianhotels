@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import SearchBar from '@/components/SearchBar'
@@ -34,9 +35,14 @@ export default async function Home() {
         {/* TOP DESTINATIONS */}
         <section id="destinations" className="py-14">
           <div className="mx-auto max-w-7xl px-4 sm:px-6">
-            <h2 className="text-2xl font-bold text-navy mb-6">Top Destinations</h2>
+            <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
+              <h2 className="text-2xl font-bold text-navy">Top Destinations</h2>
+              <Link href="/destinations" className="text-sm font-semibold text-navy hover:underline">
+                View all {destinations.length} destinations →
+              </Link>
+            </div>
             <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))' }}>
-              {destinations.map(d => <DestinationCard key={d.id} destination={d} />)}
+              {destinations.slice(0, 12).map(d => <DestinationCard key={d.id} destination={d} />)}
             </div>
           </div>
         </section>
