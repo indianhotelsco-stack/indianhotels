@@ -66,7 +66,7 @@ const FIELD_MASK = [
   'places.rating', 'places.userRatingCount', 'places.priceLevel', 'places.photos',
 ].join(',')
 
-const HOTELS_PER_DESTINATION = 10
+const HOTELS_PER_DESTINATION = 20
 
 async function textSearch(query) {
   const res = await fetch('https://places.googleapis.com/v1/places:searchText', {

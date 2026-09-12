@@ -74,12 +74,30 @@ export default async function HotelDetailPage({ params }: Props) {
             <section className="bg-white border border-gray-200 rounded-lg p-6">
               <h2 className="text-base font-bold text-navy mb-3">About This Hotel</h2>
               <p className="text-sm text-gray-600 leading-relaxed">{hotel.description}</p>
-              <h3 className="text-base font-bold text-navy mt-6 mb-3">Amenities</h3>
-              <div className="flex flex-wrap gap-2">
-                {hotel.amenities.map(a => (
-                  <span key={a.id} className="amenity-tag">{a.icon} {a.name}</span>
-                ))}
-              </div>
+              {hotel.amenities.length > 0 && (
+                <>
+                  <h3 className="text-base font-bold text-navy mt-6 mb-3">Amenities</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {hotel.amenities.map(a => (
+                      <span key={a.id} className="amenity-tag">{a.icon} {a.name}</span>
+                    ))}
+                  </div>
+                </>
+              )}
+              {(hotel.phone || hotel.website || hotel.googleMapsUrl) && (
+                <>
+                  <h3 className="text-base font-bold text-navy mt-6 mb-3">Contact &amp; Location</h3>
+                  <div className="flex flex-col gap-2 text-sm text-gray-600">
+                    {hotel.phone && <div>📞 <a href={`tel:${hotel.phone.replace(/\s+/g, '')}`} className="hover:underline">{hotel.phone}</a></div>}
+                    {hotel.website && (
+                      <div>🌐 <a href={hotel.website} target="_blank" rel="noopener noreferrer nofollow" className="hover:underline text-navy">Official website</a></div>
+                    )}
+                    {hotel.googleMapsUrl && (
+                      <div>📍 <a href={hotel.googleMapsUrl} target="_blank" rel="noopener noreferrer" className="hover:underline text-navy">View on Google Maps</a></div>
+                    )}
+                  </div>
+                </>
+              )}
             </section>
 
             <section className="bg-white border border-gray-200 rounded-lg p-6">

@@ -12,6 +12,7 @@ type ListingRow = {
   star_rating: number; review_count: number; image_urls: string[] | null
   address: string | null; latitude: number | null; longitude: number | null
   is_featured: boolean; booking_com_affiliate_link: string | null
+  phone: string | null; website: string | null; google_place_id: string | null
   listing_amenities: { amenities: AmenityRow }[] | null
 }
 
@@ -65,6 +66,9 @@ function mapListing(row: ListingRow): Hotel {
     isFeatured: row.is_featured,
     bookingComLink: hasRealAffiliateLink ? row.booking_com_affiliate_link! : bookingComSearchUrl(row.name, row.address),
     bookingComLinkIsAffiliate: hasRealAffiliateLink,
+    phone: row.phone ?? null,
+    website: row.website ?? null,
+    googleMapsUrl: row.google_place_id ? `https://www.google.com/maps/place/?q=place_id:${row.google_place_id}` : null,
   }
 }
 

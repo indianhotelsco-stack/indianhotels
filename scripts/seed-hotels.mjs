@@ -91,7 +91,7 @@ async function main() {
     const places = await textSearch(dest.searchQuery)
     console.log(`  found ${places.length} places from Google`)
 
-    for (const place of places.slice(0, 15)) {
+    for (const place of places.slice(0, 20)) {
       const imageUrls = (place.photos ?? []).slice(0, 5).map(p => photoUrl(p.name))
       const priceLevel = place.priceLevel ?? 'PRICE_LEVEL_UNSPECIFIED'
       const estimatedPrice = PRICE_ESTIMATE_BY_LEVEL[priceLevel] ?? PRICE_ESTIMATE_BY_LEVEL.PRICE_LEVEL_UNSPECIFIED

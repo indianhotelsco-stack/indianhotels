@@ -45,6 +45,9 @@ export interface Hotel {
   bookingComLink: string
   /** True once a real affiliate account is wired up — false means bookingComLink is a plain (non-commission) search link. */
   bookingComLinkIsAffiliate: boolean
+  phone: string | null
+  website: string | null
+  googleMapsUrl: string | null
 }
 
 export interface HotelFilters {

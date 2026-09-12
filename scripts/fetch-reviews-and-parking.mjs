@@ -34,11 +34,18 @@ async function main() {
     .from('amenities').select('id').eq('name', 'Parking').single()
   if (amenityError) throw amenityError
 
-  const { data: listings, error } = await supabase
+  const { data: allListings, error } = await supabase
     .from('listings').select('id, name, google_place_id').not('google_place_id', 'is', null)
   if (error) throw error
 
-  console.log(`Fetching reviews + parking status for ${listings.length} hotels...\n`)
+  // Skip listings that already have reviews — safe to re-run after adding
+  // new hotels without re-fetching (and duplicating) everything already done.
+  const { data: alreadyDone, error: doneError } = await supabase.from('reviews').select('listing_id')
+  if (doneError) throw doneError
+  const doneIds = new Set(alreadyDone.map(r => r.listing_id))
+  const listings = allListings.filter(l => !doneIds.has(l.id))
+
+  console.log(`Fetching reviews + parking status for ${listings.length} hotels (${allListings.length - listings.length} already done, skipped)...\n`)
   let reviewCount = 0, parkingCount = 0, failed = 0
 
   for (const listing of listings) {
