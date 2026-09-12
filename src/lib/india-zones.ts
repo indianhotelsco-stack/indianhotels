@@ -58,3 +58,33 @@ const REGION_TO_ZONE: Record<string, string> = {
 export function zoneForRegion(region: string): string {
   return REGION_TO_ZONE[region] ?? 'north'
 }
+
+// India has 28 states and 8 union territories (since Jammu & Kashmir's 2019
+// reorganisation split it into the J&K and Ladakh union territories). Used
+// to report state/UT counts precisely rather than a single ambiguous
+// "N states and union territories" figure that reads easily as "N states".
+const UNION_TERRITORIES = new Set([
+  'Andaman and Nicobar Islands',
+  'Chandigarh',
+  'Dadra and Nagar Haveli and Daman and Diu',
+  'Delhi',
+  'Jammu and Kashmir',
+  'Ladakh',
+  'Lakshadweep',
+  'Puducherry',
+])
+
+export function isUnionTerritory(region: string): boolean {
+  return UNION_TERRITORIES.has(region)
+}
+
+export function countStatesAndUTs(regions: Iterable<string>): { states: number; unionTerritories: number } {
+  const unique = new Set(regions)
+  let states = 0
+  let unionTerritories = 0
+  for (const region of unique) {
+    if (isUnionTerritory(region)) unionTerritories++
+    else states++
+  }
+  return { states, unionTerritories }
+}

@@ -3,7 +3,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import DestinationCard from '@/components/DestinationCard'
 import { getAllDestinations } from '@/lib/data'
-import { ZONES, zoneForRegion } from '@/lib/india-zones'
+import { ZONES, zoneForRegion, countStatesAndUTs } from '@/lib/india-zones'
 
 export const metadata: Metadata = {
   title: 'All Destinations — Hotels Across India',
@@ -22,7 +22,7 @@ export default async function AllDestinationsPage() {
     byZone.set(zoneId, list)
   }
   const activeZones = ZONES.filter(z => byZone.has(z.id))
-  const regionCount = new Set(destinations.map(d => d.region)).size
+  const { states, unionTerritories } = countStatesAndUTs(destinations.map(d => d.region))
 
   return (
     <>
@@ -38,7 +38,7 @@ export default async function AllDestinationsPage() {
               Every Corner of India, <span className="text-gold">One Place to Stay</span>
             </h1>
             <p className="text-gray-300 text-base sm:text-lg max-w-xl mx-auto">
-              {destinations.length} destinations across {regionCount} states and union territories — from Himalayan passes to southern backwaters.
+              {destinations.length} destinations across {states} states and {unionTerritories} union territories — from Himalayan passes to southern backwaters.
             </p>
           </div>
         </section>

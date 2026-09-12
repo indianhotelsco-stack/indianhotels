@@ -5,6 +5,7 @@ import SearchBar from '@/components/SearchBar'
 import DestinationCard from '@/components/DestinationCard'
 import HotelCard from '@/components/HotelCard'
 import { getAllDestinations, getFeaturedHotels } from '@/lib/data'
+import { countStatesAndUTs } from '@/lib/india-zones'
 
 const WHY_CARDS = [
   { title: 'Best Prices', desc: 'Compare rates across trusted booking partners to find the best price for every stay.' },
@@ -14,6 +15,7 @@ const WHY_CARDS = [
 
 export default async function Home() {
   const [destinations, featured] = await Promise.all([getAllDestinations(), getFeaturedHotels(4)])
+  const { states, unionTerritories } = countStatesAndUTs(destinations.map(d => d.region))
 
   return (
     <>
@@ -30,7 +32,7 @@ export default async function Home() {
           />
           <div className="mx-auto max-w-7xl px-4 sm:px-6 py-16 sm:py-20 relative">
             <span className="inline-block text-xs font-bold tracking-wide uppercase text-gold bg-white/10 px-3 py-1 rounded-full mb-4">
-              {destinations.length} destinations · every state covered
+              {destinations.length} destinations · {states} states · {unionTerritories} union territories
             </span>
             <h1 className="font-bold text-[34px] sm:text-[48px] leading-tight mb-3 max-w-2xl">
               Stay at India&rsquo;s <span className="text-gold">Best Hotels</span>
