@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import ImagePlaceholder from '@/components/ImagePlaceholder'
+import HotelGallery from '@/components/HotelGallery'
 import BookingSidebar from './BookingSidebar'
 import { getAllHotelIds, getDestinationById, getHotelById, getReviewsForHotel } from '@/lib/data'
 
@@ -36,8 +36,6 @@ export default async function HotelDetailPage({ params }: Props) {
     getReviewsForHotel(hotel.id),
   ])
 
-  const [mainImage, ...thumbnails] = hotel.imageUrls
-
   return (
     <>
       <Header />
@@ -51,20 +49,11 @@ export default async function HotelDetailPage({ params }: Props) {
         </div>
 
         <div className="mx-auto max-w-6xl px-4 sm:px-6 mt-4">
-          <div className="rounded-lg overflow-hidden relative" style={{ height: 320 }}>
-            {mainImage ? (
-              <Image src={mainImage} alt={hotel.name} fill className="object-cover" priority />
-            ) : (
+          {hotel.imageUrls.length > 0 ? (
+            <HotelGallery images={hotel.imageUrls} hotelName={hotel.name} />
+          ) : (
+            <div className="rounded-lg overflow-hidden relative" style={{ height: 320 }}>
               <ImagePlaceholder height={320} label={hotel.name} className="rounded-lg" />
-            )}
-          </div>
-          {thumbnails.length > 0 && (
-            <div className="grid grid-cols-3 gap-2.5 mt-2.5">
-              {thumbnails.slice(0, 3).map((src, i) => (
-                <div key={src} className="relative rounded-lg overflow-hidden" style={{ height: 80 }}>
-                  <Image src={src} alt={`${hotel.name} photo ${i + 2}`} fill className="object-cover" />
-                </div>
-              ))}
             </div>
           )}
         </div>
