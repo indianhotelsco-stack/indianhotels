@@ -7,8 +7,7 @@ export const metadata: Metadata = {
   description: 'Get in touch with IndianHotels.co.',
 }
 
-// TODO: replace with a real contact email/form before launch.
-const CONTACT_EMAIL = 'hello@indianhotels.co'
+const CONTACT_EMAIL = 'indianhotelsco@gmail.com'
 
 export default function ContactPage() {
   return (
