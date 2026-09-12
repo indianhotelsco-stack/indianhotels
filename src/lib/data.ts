@@ -83,9 +83,14 @@ function mapReview(row: ReviewRow): Review {
 const LISTING_SELECT = '*, listing_amenities(amenities(id, name, icon))'
 
 export async function getAllDestinations(): Promise<Destination[]> {
-  const { data, error } = await supabase.from('destinations').select('*').order('monthly_searches', { ascending: false })
+  // Sorted in JS rather than via .order() — that combination reproducibly
+  // returned 0 rows (no error) specifically when called from sitemap.ts
+  // during `next build`, while the identical query without .order() and a
+  // raw fetch to the same endpoint both worked. Root cause not fully
+  // isolated; avoiding the `.order()` chain sidesteps it entirely.
+  const { data, error } = await supabase.from('destinations').select('*')
   if (error) throw error
-  return (data as DestinationRow[]).map(mapDestination)
+  return (data as DestinationRow[]).map(mapDestination).sort((a, b) => b.monthlySearches - a.monthlySearches)
 }
 
 export async function getDestinationBySlug(slug: string): Promise<Destination | undefined> {
