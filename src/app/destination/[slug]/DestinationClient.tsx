@@ -29,7 +29,7 @@ export default function DestinationClient({ hotels }: { hotels: Hotel[] }) {
       <FilterPanel filters={filters} onChange={setFilters} />
       <div className="flex-1 bg-gray-50 p-6">
         <div className="flex items-center justify-between mb-4">
-          <div className="text-sm text-gray-600">{filtered.length} hotels found</div>
+          <div className="text-sm text-gray-600">{filtered.length} hotel{filtered.length === 1 ? '' : 's'} found</div>
           <select
             value={filters.sort ?? ''}
             onChange={e => setFilters({ ...filters, sort: (e.target.value || undefined) as HotelFilters['sort'] })}
