@@ -6,8 +6,12 @@ import DestinationHeroGallery from '@/components/DestinationHeroGallery'
 import DestinationClient from './DestinationClient'
 import { getAllAmenities, getAllDestinations, getDestinationBySlug, getHotelsByDestination } from '@/lib/data'
 import { haversineKm } from '@/lib/geo'
+import { bookingParamsFromSearchParams } from '@/lib/booking'
 
-type Props = { params: Promise<{ slug: string }> }
+type Props = {
+  params: Promise<{ slug: string }>
+  searchParams: Promise<Record<string, string | string[] | undefined>>
+}
 
 export async function generateStaticParams() {
   const destinations = await getAllDestinations()
@@ -24,8 +28,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default async function DestinationPage({ params }: Props) {
+export default async function DestinationPage({ params, searchParams }: Props) {
   const { slug } = await params
+  const search = bookingParamsFromSearchParams(await searchParams)
   const destination = await getDestinationBySlug(slug)
   if (!destination) notFound()
 
@@ -60,7 +65,7 @@ export default async function DestinationPage({ params }: Props) {
           subtitle={`${destination.monthlySearches.toLocaleString('en-IN')}+ searches/month · ${hotels.length} hotels available`}
         />
 
-        <DestinationClient hotels={hotels} amenities={amenities} destination={destination} />
+        <DestinationClient hotels={hotels} amenities={amenities} destination={destination} search={search} />
       </main>
       <Footer />
     </>

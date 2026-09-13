@@ -8,8 +8,12 @@ import HotelGallery from '@/components/HotelGallery'
 import BookingSidebar from './BookingSidebar'
 import { getAllHotelIds, getDestinationById, getHotelById, getReviewsForHotel } from '@/lib/data'
 import { haversineKm } from '@/lib/geo'
+import { bookingParamsFromSearchParams } from '@/lib/booking'
 
-type Props = { params: Promise<{ id: string }> }
+type Props = {
+  params: Promise<{ id: string }>
+  searchParams: Promise<Record<string, string | string[] | undefined>>
+}
 
 export async function generateStaticParams() {
   const ids = await getAllHotelIds()
@@ -27,8 +31,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default async function HotelDetailPage({ params }: Props) {
+export default async function HotelDetailPage({ params, searchParams }: Props) {
   const { id } = await params
+  const search = bookingParamsFromSearchParams(await searchParams)
   const hotel = await getHotelById(id)
   if (!hotel) notFound()
 
@@ -122,7 +127,7 @@ export default async function HotelDetailPage({ params }: Props) {
             </section>
           </div>
 
-          <BookingSidebar hotel={hotel} />
+          <BookingSidebar hotel={hotel} initialSearch={search} />
         </div>
       </main>
       <Footer />

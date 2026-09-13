@@ -6,6 +6,7 @@ import FilterPanel from '@/components/FilterPanel'
 import HotelCard from '@/components/HotelCard'
 import HotelCompareModal from '@/components/HotelCompareModal'
 import type { Amenity, Destination, Hotel, HotelFilters } from '@/lib/types'
+import { bookingParamsToQueryString, type BookingSearchParams } from '@/lib/booking'
 
 const HotelMap = dynamic(() => import('@/components/HotelMap'), { ssr: false })
 
@@ -15,11 +16,14 @@ export default function DestinationClient({
   hotels,
   amenities,
   destination,
+  search,
 }: {
   hotels: Hotel[]
   amenities: Amenity[]
   destination: Destination
+  search: BookingSearchParams
 }) {
+  const searchQueryString = bookingParamsToQueryString(search)
   const [filters, setFilters] = useState<HotelFilters>({})
   const [view, setView] = useState<'list' | 'map'>('list')
   const [compareMode, setCompareMode] = useState(false)
@@ -65,6 +69,18 @@ export default function DestinationClient({
     <div className="flex flex-col lg:flex-row">
       <FilterPanel filters={filters} onChange={setFilters} amenities={amenities} />
       <div className="flex-1 bg-gray-50 p-6 pb-24">
+        {(search.checkIn || search.checkOut || search.guests) && (
+          <div className="bg-white border border-gray-200 rounded-lg px-4 py-2.5 mb-4 text-xs text-gray-700">
+            Showing hotels for{' '}
+            {search.checkIn && search.checkOut ? (
+              <strong className="text-navy">{search.checkIn} → {search.checkOut}</strong>
+            ) : (
+              <strong className="text-navy">your selected dates</strong>
+            )}
+            {search.guests ? <> · <strong className="text-navy">{search.guests} guest{search.guests === 1 ? '' : 's'}</strong></> : null}
+            {' '}— carried through to Booking.com when you click a hotel.
+          </div>
+        )}
         <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
           <div className="text-sm text-gray-600">{filtered.length} hotel{filtered.length === 1 ? '' : 's'} found</div>
           <div className="flex items-center gap-2 flex-wrap">
@@ -121,6 +137,7 @@ export default function DestinationClient({
                 compareMode={compareMode}
                 isSelected={compareIds.includes(h.id)}
                 onToggleCompare={toggleCompare}
+                hrefQueryString={searchQueryString}
               />
             ))}
           </div>

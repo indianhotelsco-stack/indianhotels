@@ -8,15 +8,17 @@ export default function HotelCard({
   compareMode = false,
   isSelected = false,
   onToggleCompare,
+  hrefQueryString = '',
 }: {
   hotel: Hotel
   compareMode?: boolean
   isSelected?: boolean
   onToggleCompare?: (id: string) => void
+  hrefQueryString?: string
 }) {
   return (
     <Link
-      href={`/hotel/${hotel.id}`}
+      href={`/hotel/${hotel.id}${hrefQueryString}`}
       className="card card-hover overflow-hidden !p-0 block relative"
     >
       {hotel.isFeatured && (
